@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://byjcjrr4fhh3r"]
+[gd_scene load_steps=39 format=3 uid="uid://byjcjrr4fhh3r"]
 
 [ext_resource type="Script" path="res://Scripts/Characters/Player/Player.cs" id="1_cc8ux"]
 [ext_resource type="Texture2D" uid="uid://daw4oi2hhyhm4" path="res://Assets/Sprites/Characters/Player/Idle Blinking/Idle Blinking_000.png" id="1_rlviw"]
@@ -31,6 +31,9 @@
 [ext_resource type="Texture2D" uid="uid://1py5llpubqfu" path="res://Assets/Sprites/Characters/Player/Running/Running_009.png" id="28_3ur8r"]
 [ext_resource type="Texture2D" uid="uid://rjrnef2160py" path="res://Assets/Sprites/Characters/Player/Running/Running_010.png" id="29_msf1r"]
 [ext_resource type="Texture2D" uid="uid://c4qtdfoc1xwv" path="res://Assets/Sprites/Characters/Player/Running/Running_011.png" id="30_tain7"]
+[ext_resource type="Script" path="res://Scripts/Characters/Player/PlayerIdleState.cs" id="32_h7moa"]
+[ext_resource type="Script" path="res://Scripts/Characters/Player/PlayerMoveState.cs" id="32_muvv8"]
+[ext_resource type="Script" path="res://Scripts/Characters/StateMachine.cs" id="34_gjawg"]
 
 [sub_resource type="Animation" id="Animation_oqine"]
 resource_name = "Idle"
@@ -47,21 +50,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [ExtResource("1_rlviw"), ExtResource("2_vmgm3"), ExtResource("3_osl6d"), ExtResource("4_0vf6h"), ExtResource("5_8okfx"), ExtResource("6_dui6n"), ExtResource("7_hsnva"), ExtResource("8_fqtd6"), ExtResource("9_6dm88"), ExtResource("10_t2cwq"), ExtResource("11_y1ae5"), ExtResource("12_e6sfe"), ExtResource("13_d1sdm"), ExtResource("14_6qvpw"), ExtResource("15_p20hp"), ExtResource("16_bpk1u"), ExtResource("17_oeuu0"), ExtResource("18_nb3ii")]
-}
-
-[sub_resource type="Animation" id="Animation_nlyk8"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite3D:texture")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [ExtResource("1_rlviw")]
 }
 
 [sub_resource type="Animation" id="Animation_neysb"]
@@ -81,6 +69,21 @@ tracks/0/keys = {
 "values": [ExtResource("19_ks6u3"), ExtResource("20_ygs02"), ExtResource("21_u81db"), ExtResource("22_3unqh"), ExtResource("23_amalt"), ExtResource("24_spw1v"), ExtResource("25_t32hb"), ExtResource("26_77uh0"), ExtResource("27_rd0yj"), ExtResource("28_3ur8r"), ExtResource("29_msf1r"), ExtResource("30_tain7")]
 }
 
+[sub_resource type="Animation" id="Animation_nlyk8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("1_rlviw")]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8q3nu"]
 _data = {
 "Idle": SubResource("Animation_oqine"),
@@ -88,10 +91,11 @@ _data = {
 "RESET": SubResource("Animation_nlyk8")
 }
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_animationPlayerNode", "_spriteNode")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_animationPlayerNode", "_spriteNode", "_stateMachineNode")]
 script = ExtResource("1_cc8ux")
 _animationPlayerNode = NodePath("AnimationPlayer")
 _spriteNode = NodePath("Sprite3D")
+_stateMachineNode = NodePath("StateMachine")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 texture_filter = 0
@@ -101,3 +105,14 @@ texture = ExtResource("1_rlviw")
 libraries = {
 "": SubResource("AnimationLibrary_8q3nu")
 }
+
+[node name="MoveState" type="Node" parent="."]
+script = ExtResource("32_muvv8")
+
+[node name="IdleState" type="Node" parent="."]
+script = ExtResource("32_h7moa")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("_currentState", "_states")]
+script = ExtResource("34_gjawg")
+_currentState = NodePath("../IdleState")
+_states = [NodePath("../IdleState"), NodePath("../MoveState")]
