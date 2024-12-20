@@ -3,7 +3,7 @@ using Godot;
 public partial class PlayerDashState : PlayerState
 {
     [Export] private Timer _dashTimerNode;
-    [Export] private float _speed = 20f;
+    [Export(PropertyHint.Range, "5,30,0.1")] private float _speed = 20f;
 
     public override void _Ready()
     {
@@ -25,7 +25,7 @@ public partial class PlayerDashState : PlayerState
 
         if (_characterNode.Velocity == Vector3.Zero)
         {
-            _characterNode.Velocity = _characterNode.SprideNode.FlipH ? Vector3.Left : Vector3.Right;
+            _characterNode.Velocity = _characterNode.SpriteNode.FlipH ? Vector3.Left : Vector3.Right;
         }
 
         _characterNode.Velocity *= _speed;

@@ -3,20 +3,15 @@ using Godot;
 public partial class Player : CharacterBody3D
 {
     [ExportGroup("Required Nodes")]
-    [Export] private AnimationPlayer _animationPlayerNode;
-    [Export] private Sprite3D _spriteNode;
-    [Export] private StateMachine _stateMachineNode;
+    [Export] public AnimationPlayer AnimationPlayerNode { get; private set; }
+    [Export] public Sprite3D SpriteNode { get; private set; }
+    [Export] public StateMachine StateMachineNode { get; private set; }
 
-    private Vector2 _direction = new();
-
-    public AnimationPlayer AnimationPlayerNode { get => _animationPlayerNode; }
-    public Sprite3D SprideNode { get => _spriteNode; }
-    public StateMachine StateMachineNode { get => _stateMachineNode; }
-    public Vector2 Direction { get => _direction; }
+    public Vector2 Direction { get; private set; } = new();
 
     public override void _Input(InputEvent @event)
     {
-        _direction = Input.GetVector(GameConstants.INPUT_MOVE_LEFT, GameConstants.INPUT_MOVE_RIGHT,
+        Direction = Input.GetVector(GameConstants.INPUT_MOVE_LEFT, GameConstants.INPUT_MOVE_RIGHT,
             GameConstants.INPUT_MOVE_FORWARD, GameConstants.INPUT_MOVE_BACKWARD);
     }
 
@@ -29,6 +24,6 @@ public partial class Player : CharacterBody3D
             return;
         }
 
-        _spriteNode.FlipH = Velocity.X < 0;
+        SpriteNode.FlipH = Velocity.X < 0;
     }
 }
