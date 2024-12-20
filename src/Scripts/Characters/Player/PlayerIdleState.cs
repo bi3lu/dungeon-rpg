@@ -1,37 +1,12 @@
 using Godot;
-public partial class PlayerIdleState : Node
+
+public partial class PlayerIdleState : PlayerState
 {
-    private Player _characterNode;
-
-    public override void _Ready()
-    {
-        _characterNode = GetOwner<Player>();
-        SetPhysicsProcess(false);
-        SetProcessInput(false);
-    }
-
     public override void _PhysicsProcess(double delta)
     {
-        if (_characterNode.GetDirection() != Vector2.Zero)
+        if (_characterNode.Direction != Vector2.Zero)
         {
-            _characterNode.GetStateMachineNode().SwithcState<PlayerMoveState>();
-        }
-    }
-
-    public override void _Notification(int what)
-    {
-        base._Notification(what);
-
-        if (what == 5001)
-        {
-            _characterNode.GetAnimationPlayerNode().Play(GameConstants.ANIM_IDLE);
-            SetPhysicsProcess(true);
-            SetProcessInput(true);
-        }
-        else if (what == 5002)
-        {
-            SetPhysicsProcess(false);
-            SetProcessInput(false);
+            _characterNode.StateMachineNode.SwitchState<PlayerMoveState>();
         }
     }
 
@@ -39,7 +14,13 @@ public partial class PlayerIdleState : Node
     {
         if (Input.IsActionJustPressed(GameConstants.INPUT_DASH))
         {
-            _characterNode.GetStateMachineNode().SwithcState<PlayerDashState>();
+            _characterNode.StateMachineNode.SwitchState<PlayerDashState>();
         }
+    }
+
+    protected override void EnterState()
+    {
+        base.EnterState();
+        _characterNode.AnimationPlayerNode.Play(GameConstants.ANIM_IDLE);
     }
 }

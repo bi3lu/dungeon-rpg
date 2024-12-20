@@ -1,4 +1,5 @@
 using Godot;
+
 public partial class StateMachine : Node
 {
     [Export] private Node _currentState;
@@ -9,7 +10,7 @@ public partial class StateMachine : Node
         _currentState.Notification(5001);
     }
 
-    public void SwithcState<T>()
+    public void SwitchState<T>()
     {
         Node newState = null;
 

@@ -1,4 +1,5 @@
 using Godot;
+
 public partial class Player : CharacterBody3D
 {
     [ExportGroup("Required Nodes")]
@@ -8,23 +9,16 @@ public partial class Player : CharacterBody3D
 
     private Vector2 _direction = new();
 
+    public AnimationPlayer AnimationPlayerNode { get => _animationPlayerNode; }
+    public Sprite3D SprideNode { get => _spriteNode; }
+    public StateMachine StateMachineNode { get => _stateMachineNode; }
+    public Vector2 Direction { get => _direction; }
+
     public override void _Input(InputEvent @event)
     {
         _direction = Input.GetVector(GameConstants.INPUT_MOVE_LEFT, GameConstants.INPUT_MOVE_RIGHT,
             GameConstants.INPUT_MOVE_FORWARD, GameConstants.INPUT_MOVE_BACKWARD);
     }
-
-    public AnimationPlayer GetAnimationPlayerNode()
-        => _animationPlayerNode;
-
-    public Sprite3D GetSpriteNode()
-        => _spriteNode;
-
-    public Vector2 GetDirection()
-        => _direction;
-
-    public StateMachine GetStateMachineNode()
-        => _stateMachineNode;
 
     public void Flip()
     {

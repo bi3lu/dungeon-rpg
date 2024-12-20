@@ -1,14 +1,13 @@
 using Godot;
-public partial class PlayerDashState : Node
-{
-    private Player _characterNode;
 
+public partial class PlayerDashState : PlayerState
+{
     [Export] private Timer _dashTimerNode;
     [Export] private float _speed = 20f;
 
     public override void _Ready()
     {
-        _characterNode = GetOwner<Player>();
+        base._Ready();
         _dashTimerNode.Timeout += HandleDashTimeout;
     }
 
@@ -18,28 +17,25 @@ public partial class PlayerDashState : Node
         _characterNode.Flip();
     }
 
-    public override void _Notification(int what)
+    protected override void EnterState()
     {
-        base._Notification(what);
 
-        if (what == 5001)
+        _characterNode.AnimationPlayerNode.Play(GameConstants.ANIM_DASH);
+        _characterNode.Velocity = new(_characterNode.Direction.X, 0, _characterNode.Direction.Y);
+
+        if (_characterNode.Velocity == Vector3.Zero)
         {
-            _characterNode.GetAnimationPlayerNode().Play(GameConstants.ANIM_DASH);
-            _characterNode.Velocity = new(_characterNode.GetDirection().X, 0, _characterNode.GetDirection().Y);
-
-            if (_characterNode.Velocity == Vector3.Zero)
-            {
-                _characterNode.Velocity = _characterNode.GetSpriteNode().FlipH ? Vector3.Left : Vector3.Right;
-            }
-
-            _characterNode.Velocity *= _speed;
-            _dashTimerNode.Start();
+            _characterNode.Velocity = _characterNode.SprideNode.FlipH ? Vector3.Left : Vector3.Right;
         }
+
+        _characterNode.Velocity *= _speed;
+        _dashTimerNode.Start();
+
     }
 
     private void HandleDashTimeout()
     {
         _characterNode.Velocity = Vector3.Zero;
-        _characterNode.GetStateMachineNode().SwithcState<PlayerIdleState>();
+        _characterNode.StateMachineNode.SwitchState<PlayerIdleState>();
     }
 }
